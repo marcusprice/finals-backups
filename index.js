@@ -1,5 +1,6 @@
 const fs = require('fs');
 const date = new Date();
+const runBackup = require('./runBackup');
 const today =
   date.getMonth() + 1 + '-' + date.getDate() + '-' + date.getFullYear();
 let continueProgram = true;
@@ -39,23 +40,29 @@ const logSuccess = () => {
   fs.appendFileSync(__dirname + '/logs.txt', '\n' + message);
 };
 
-//set a new entry for the logs
-newLogEntry(today);
+const runProgram = async () => {
+  //set a new entry for the logs
+  newLogEntry(today);
 
-//make a temporary folder to store backups - name is timestamped with today's date
-const dirPath = createNewDir(today);
+  //make a temporary folder to store backups - name is timestamped with today's date
+  const dirPath = createNewDir(today);
 
-//back up the database and put the sql file in the temp folder
+  //back up the database and put the sql file in the temp folder
 
-//make a copy of the strapi public folder and move it into the temp folder
+  runBackup(dirPath, today);
 
-//compress the temp folder
+  //make a copy of the strapi public folder and move it into the temp folder
 
-//upload the compressed folder to drive
+  //compress the temp folder
 
-//delete temp folder and compressed file
-cleanUp(dirPath);
-//delete any drive files > 60 days old
+  //upload the compressed folder to drive
 
-//log success
-logSuccess();
+  //delete temp folder and compressed file
+  //cleanUp(dirPath);
+  //delete any drive files > 60 days old
+
+  //log success
+  logSuccess();
+};
+
+runProgram();

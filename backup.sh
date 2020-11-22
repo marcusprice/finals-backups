@@ -1,2 +1,2 @@
 #!/bin/bash
-pg_dump --username=<USER> <DATABASE> -f ./<FILENAME>.tar -F t
+pg_dump "$1" > "$2".sql
