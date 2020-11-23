@@ -1,44 +1,14 @@
-const fs = require('fs');
 const date = new Date();
-const runBackup = require('./runBackup');
 const today =
   date.getMonth() + 1 + '-' + date.getDate() + '-' + date.getFullYear();
-let continueProgram = true;
-
-const newLogEntry = (today) => {
-  //set a new entry for the logs
-  fs.appendFileSync(__dirname + '/logs.txt', '\n\n' + today + ' Logs');
-};
-
-const logAndKill = (err) => {
-  fs.appendFileSync(__dirname + '/logs.txt', '\n' + err.toString());
-  process.exit(1);
-};
-
-const createNewDir = (today) => {
-  const path = __dirname + '/' + today + ' backup';
-
-  try {
-    fs.mkdirSync(path);
-  } catch (err) {
-    logAndKill(err);
-  }
-
-  return path;
-};
-
-const cleanUp = (dirPath) => {
-  try {
-    fs.rmdirSync(dirPath);
-  } catch (err) {
-    logAndKill(err);
-  }
-};
-
-const logSuccess = () => {
-  const message = 'Successful backup on ' + date.toUTCString();
-  fs.appendFileSync(__dirname + '/logs.txt', '\n' + message);
-};
+const runBackup = require('./runBackup');
+const {
+  newLogEntry,
+  logAndKill,
+  createNewDir,
+  cleanUp,
+  logSuccess,
+} = require('./fsHelpers');
 
 const runProgram = async () => {
   //set a new entry for the logs
@@ -58,11 +28,11 @@ const runProgram = async () => {
   //upload the compressed folder to drive
 
   //delete temp folder and compressed file
-  //cleanUp(dirPath);
+  cleanUp(dirPath);
   //delete any drive files > 60 days old
 
   //log success
-  logSuccess();
+  logSuccess(date);
 };
 
 runProgram();
