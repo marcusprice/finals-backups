@@ -1,4 +1,5 @@
 const fs = require('fs');
+const ncp = require('ncp').ncp;
 
 exports.newLogEntry = (today) => {
   //set a new entry for the logs
@@ -33,4 +34,16 @@ exports.cleanUp = (dirPath) => {
 exports.logSuccess = (date) => {
   const message = 'Successful backup on ' + date.toUTCString();
   fs.appendFileSync(__dirname + '/logs.txt', '\n' + message);
+};
+
+exports.cp = (source, destination) => {
+  return new Promise((resolve, reject) => {
+    ncp(source, destination, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(true);
+      }
+    });
+  });
 };

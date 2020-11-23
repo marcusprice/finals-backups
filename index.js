@@ -1,10 +1,11 @@
+require('dotenv').config();
 const date = new Date();
 const today =
   date.getMonth() + 1 + '-' + date.getDate() + '-' + date.getFullYear();
 const runBackup = require('./runBackup');
 const {
+  cp,
   newLogEntry,
-  logAndKill,
   createNewDir,
   cleanUp,
   logSuccess,
@@ -18,17 +19,16 @@ const runProgram = async () => {
   const dirPath = createNewDir(today);
 
   //back up the database and put the sql file in the temp folder
-
-  runBackup(dirPath, today);
+  runBackup(process.env.DB_NAME, dirPath, today);
 
   //make a copy of the strapi public folder and move it into the temp folder
-
+  await cp(process.env.PUBLIC_PATH, dirPath + '/public');
   //compress the temp folder
 
   //upload the compressed folder to drive
 
   //delete temp folder and compressed file
-  cleanUp(dirPath);
+  //cleanUp(dirPath);
   //delete any drive files > 60 days old
 
   //log success
