@@ -2,3 +2,5 @@
 node_modules
 public
 * backup
+* backup.zip
+.DS_Store

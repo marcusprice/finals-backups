@@ -6,6 +6,10 @@ exports.newLogEntry = (today) => {
   fs.appendFileSync(__dirname + '/logs.txt', '\n\n' + today + ' Logs');
 };
 
+exports.appendLog = (logText) => {
+  fs.appendFileSync(__dirname + '/logs.txt', logText);
+};
+
 exports.logAndKill = (err) => {
   fs.appendFileSync(__dirname + '/logs.txt', '\n' + err.toString());
   process.exit(1);
@@ -17,6 +21,7 @@ exports.createNewDir = (today) => {
   try {
     fs.mkdirSync(path);
   } catch (err) {
+    this.appendLog('\n\nError while creating new directory:');
     this.logAndKill(err);
   }
 
@@ -26,7 +31,9 @@ exports.createNewDir = (today) => {
 exports.cleanUp = (dirPath) => {
   try {
     fs.rmdirSync(dirPath, { recursive: true });
+    fs.rmSync(dirPath + '.zip');
   } catch (err) {
+    this.appendLog('\n\nError while cleaning up:');
     this.logAndKill(err);
   }
 };
