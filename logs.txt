@@ -1,1 +1,21 @@
 Finals Backup Logs
+
+11-23-2020 Logs
+
+11-23-2020 Logs
+
+11-23-2020 Logs
+Error: EEXIST: file already exists, mkdir '/Users/marcusprice/repositories/finals-backups/11-23-2020 backup'
+
+11-23-2020 Logs
+
+11-23-2020 Logs
+
+11-23-2020 Logs
+Successful backup on Mon, 23 Nov 2020 20:57:17 GMT
+
+11-23-2020 Logs
+Successful backup on Mon, 23 Nov 2020 20:58:09 GMT
+
+11-23-2020 Logs
+Successful backup on Mon, 23 Nov 2020 20:59:23 GMT

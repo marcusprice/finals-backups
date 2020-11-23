@@ -3,6 +3,7 @@ const date = new Date();
 const today =
   date.getMonth() + 1 + '-' + date.getDate() + '-' + date.getFullYear();
 const runBackup = require('./runBackup');
+const compressDirectory = require('./compressDirectory');
 const {
   cp,
   newLogEntry,
@@ -24,7 +25,7 @@ const runProgram = async () => {
   //make a copy of the strapi public folder and move it into the temp folder
   await cp(process.env.PUBLIC_PATH, dirPath + '/public');
   //compress the temp folder
-
+  await compressDirectory(dirPath, dirPath + '.zip');
   //upload the compressed folder to drive
 
   //delete temp folder and compressed file
