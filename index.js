@@ -1,9 +1,7 @@
 require('dotenv').config();
-const date = new Date();
-const today =
-  date.getMonth() + 1 + '-' + date.getDate() + '-' + date.getFullYear();
 const runSQLBackup = require('./runSQLBackup');
 const compressDirectory = require('./compressDirectory');
+const googleDrive = require('./googleDrive');
 const {
   cp,
   newLogEntry,
@@ -13,6 +11,10 @@ const {
   logAndKill,
   logSuccess,
 } = require('./fsHelpers');
+
+const date = new Date();
+const today =
+  date.getMonth() + 1 + '-' + date.getDate() + '-' + date.getFullYear();
 
 const runProgram = async () => {
   //set a new entry for the logs
@@ -45,6 +47,21 @@ const runProgram = async () => {
   }
 
   //upload the compressed folder to drive
+  try {
+    const jwtClient = await googleDrive.authorizeAndConnect(
+      process.env.GOOGLE_CLIENT_EMAIL,
+      process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/gm, '\n')
+    );
+    await googleDrive.uploadFile(
+      jwtClient,
+      today + ' backup',
+      dirPath + '.zip',
+      process.env.GOOGLE_BACKUPS_FOLDER_ID
+    );
+  } catch (err) {
+    appendLog('\n\nError while uploading to google drive:');
+    logAndKill(err);
+  }
 
   //delete temp folder and compressed file
   cleanUp(dirPath);
