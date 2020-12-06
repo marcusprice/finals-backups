@@ -1,7 +1,8 @@
+global.__basedir = __dirname;
 require('dotenv').config();
-const runSQLBackup = require('./runSQLBackup');
-const compressDirectory = require('./compressDirectory');
-const googleDrive = require('./googleDrive');
+const runSQLBackup = require('./lib/runSQLBackup');
+const compressDirectory = require('./lib/compressDirectory');
+const googleDrive = require('./lib/googleDrive');
 const {
   cp,
   newLogEntry,
@@ -10,8 +11,13 @@ const {
   appendLog,
   logAndKill,
   logSuccess,
-} = require('./fsHelpers');
+} = require('./lib/fsHelpers');
 
+const dbName = process.env.DB_NAME;
+const publicPath = process.env.PUBLIC_PATH;
+const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+const privateKey = process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/gm, '\n');
+const folderID = process.env.GOOGLE_BACKUPS_FOLDER_ID;
 const date = new Date();
 const today =
   date.getMonth() + 1 + '-' + date.getDate() + '-' + date.getFullYear();
@@ -23,9 +29,11 @@ const runProgram = async () => {
   //make a temporary folder to store backups - name is timestamped with today's date
   const dirPath = createNewDir(today);
 
+  console.log(dirPath);
+
   //back up the database and put the sql file in the temp folder
   try {
-    await runSQLBackup(process.env.DB_NAME, dirPath, today);
+    await runSQLBackup(dbName, dirPath, today);
   } catch (err) {
     appendLog('\n\n Error while backing up database:');
     logAndKill(err);
@@ -33,7 +41,7 @@ const runProgram = async () => {
 
   //make a copy of the strapi public folder and move it into the temp folder
   try {
-    await cp(process.env.PUBLIC_PATH, dirPath + '/public');
+    await cp(publicPath, dirPath + '/public');
   } catch (err) {
     appendLog('\n\nError while copying public folder:');
     logAndKill(err);
@@ -49,14 +57,15 @@ const runProgram = async () => {
   //upload the compressed folder to drive
   try {
     const jwtClient = await googleDrive.authorizeAndConnect(
-      process.env.GOOGLE_CLIENT_EMAIL,
-      process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/gm, '\n')
+      clientEmail,
+      privateKey
     );
+
     await googleDrive.uploadFile(
       jwtClient,
       today + ' backup',
       dirPath + '.zip',
-      process.env.GOOGLE_BACKUPS_FOLDER_ID
+      folderID
     );
   } catch (err) {
     appendLog('\n\nError while uploading to google drive:');
