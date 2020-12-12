@@ -29,8 +29,6 @@ const runProgram = async () => {
   //make a temporary folder to store backups - name is timestamped with today's date
   const dirPath = createNewDir(today);
 
-  console.log(dirPath);
-
   //back up the database and put the sql file in the temp folder
   try {
     await runSQLBackup(dbName, dirPath, today);
