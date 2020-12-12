@@ -1,5 +1,6 @@
 global.__basedir = __dirname;
-require('dotenv').config();
+const dotenv = require('dotenv');
+dotenv.config({ path: __dirname + '/.env' });
 const runSQLBackup = require('./lib/runSQLBackup');
 const compressDirectory = require('./lib/compressDirectory');
 const googleDrive = require('./lib/googleDrive');
