@@ -20,6 +20,12 @@ In order to gain access to google drive, you need to log into the account where 
 
 You will also need to create a directory to store the backups in and make a note of the folder ID. Lastly, make sure you add the service account to the list of authorized users for the backups file using the client email for the service account.
 
+## pg_dump Credentials
+
+In order for pg_dump to create a backup of the database, you will need to create a new file named `pg_dump` in the home directory of the account that pg_dump will run as. The format for the file is:
+
+`hostname:port:database:username:password`
+
 ## TODO
 
-Create a function that collects a list of file IDs that are more than n days old and deletes them.
+Create a function that collects a list of file IDs on google drive that are more than n days old and deletes them.
